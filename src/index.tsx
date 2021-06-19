@@ -1,12 +1,36 @@
 import React from 'react';
+
 import ReactDOM from 'react-dom';
-import './index.css';
+
 import App from './App';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
+
+import { ChakraProvider } from "@chakra-ui/react"
+import theme from "./theme"
+import "@fontsource/archivo/400.css"
+import "@fontsource/archivo/700.css"
+
+import {
+  // useQuery,
+  // useMutation,
+  // useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
+
+
+
+
+const queryClient = new QueryClient()
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <App />
+      </ChakraProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
