@@ -3,25 +3,22 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 import './App.css';
 import { Home } from './pages/Home';
+import { Team } from './pages/Team';
 
 
 function App() {
   return (
     <Router>
-      {/* <AppContainer>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-        </ul>
-      </AppContainer> */}
+
       <Switch>
-        <Route path="/">
+        <Route exact path="/">
           <Home />
+        </Route>
+        <Route path="/team/:id">
+          <Team />
         </Route>
 {/* // add route to team detail component  */}
 {/* // add route to team detail component  */}
