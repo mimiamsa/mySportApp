@@ -76,8 +76,8 @@ export type Players = {
 
 
 export type PlayerData = {
-  idTeam: string | null;
-  idPlayer: string | null;
+  idTeam: string;
+  idPlayer: string;
   idTeam2: string | null;
   idTeamNational: string | null;
   idSoccerXML: string | null;
