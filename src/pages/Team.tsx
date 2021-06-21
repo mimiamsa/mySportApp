@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+
+import { Link as RLink, useParams } from 'react-router-dom'
+
 import { useFetchTeam } from '../api/api'
-import { Image, Spinner, Text, Divider, FormControl, FormLabel, Input, FormHelperText, Button } from "@chakra-ui/react"
+import { Link, Image, Spinner, Text, Divider, FormControl, FormLabel, Input, FormHelperText, Button } from "@chakra-ui/react"
 import {
     Modal,
     ModalOverlay,
@@ -36,9 +38,6 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ id, isOpen, onClose, playersSta
         }))
     }
 
-    // useEffect(() => {
-    //     setInputValue(playerToUpdate?.strPlayer ?? '')
-    // }, [playerToUpdate?.strPlayer])
     return <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -98,6 +97,7 @@ export const Team = () => {
     }
     return (
         <AppContainer>
+            <Link as={RLink} to="/"> Back to team list </Link>
             <Image src={data?.teams[0].strTeamBadge} w={8}></Image>
             <Divider spa orientation="horizontal" />
             <Text fontSize="xl">Team</Text>
@@ -119,7 +119,7 @@ export const Team = () => {
                 Add Player
             </Button>
             {/* </form> */}
- {/* 
+            {/* 
  * place data in form 
  * add img input 
  * add verifications for inputs 

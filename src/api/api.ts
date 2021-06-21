@@ -46,3 +46,4 @@ const fetchAllPlayersFromTeam = async (teamName: string): Promise<Players> =>
   export const useFetchAllPlayers = (name:string) => {
     return useQuery(["allPlayers", name], () => fetchAllPlayersFromTeam(name));
   }
+
