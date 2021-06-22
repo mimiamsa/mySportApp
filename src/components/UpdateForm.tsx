@@ -12,25 +12,28 @@ import {
     ModalCloseButton,
 } from "@chakra-ui/react"
 import { SamplePlayerData } from '../api/playersData';
+import { FormState } from '../pages/Team';
 
 type UpdateFormProps = {
-    id: string | null; 
-    isOpen: boolean; 
-    onClose: () => void; 
-    setPlayers: React.Dispatch<React.SetStateAction<SamplePlayerData[]>>; 
+    id: string | null;
+    isOpen: boolean;
+    onClose: () => void;
+    setPlayers: React.Dispatch<React.SetStateAction<SamplePlayerData[]>>;
     playersState: SamplePlayerData[]
 }
 
 export const UpdateForm: React.FC<UpdateFormProps> = ({ id, isOpen, onClose, playersState, setPlayers }) => {
     const playerToUpdate = playersState.find(player => id === player.idPlayer)
-    const [inputValue, setInputValue] = useState<string>(playerToUpdate?.strPlayer ?? '')
+
+    const [formValue, setformValue] = useState<FormState>({ strPlayer: playerToUpdate?.strPlayer || "" })
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setInputValue(e.target.value)
+        setformValue({ ...formValue, strPlayer: e.target.value })
     }
+
     const handleSubmit = () => {
         onClose()
         setPlayers(prev => prev.map(player => {
-            return player.idPlayer === id ? { ...player, strPlayer: inputValue } : player
+            return player.idPlayer === id ? { ...player, strPlayer: formValue.strPlayer } : player
         }))
     }
     return <Modal isOpen={isOpen} onClose={onClose}>
@@ -41,7 +44,7 @@ export const UpdateForm: React.FC<UpdateFormProps> = ({ id, isOpen, onClose, pla
             <ModalBody>
                 <FormControl>
                     <FormLabel>Player name</FormLabel>
-                    <Input value={inputValue} name="strPlayer" placeholder="ex. Paul Pogba" onChange={(e) => handleChange(e)} />
+                    <Input value={formValue.strPlayer} name="strPlayer" placeholder="ex. Paul Pogba" onChange={(e) => handleChange(e)} />
                 </FormControl>
             </ModalBody>
             <ModalFooter>

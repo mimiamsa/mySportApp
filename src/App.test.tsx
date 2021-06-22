@@ -9,5 +9,5 @@ test('renders learn react link', () => {
 });
 
 /**
- * test component render 
+ * test components render 
  */

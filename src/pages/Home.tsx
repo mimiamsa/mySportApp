@@ -14,11 +14,11 @@ export const Home = () => {
 
   return (
     <AppContainer>
-      <Text fontSize="6xl" fontWeight="bold" mb={4} textTransform="uppercase">France soccer teams</Text>
+      <Text lineHeight="normal" fontSize="6xl" fontWeight="bold" mb={4} textTransform="uppercase">France soccer teams</Text>
       <Grid gap={4} gridTemplateColumns="repeat(auto-fill, 250px)">
         {teamsData?.map(team => {
           return (
-          <CardLink   key={team.idTeam} link={`/team/${team.idTeam}`} h="350px" >
+          <CardLink key={team.idTeam} link={`/team/${team.idTeam}`} h="350px" >
             <Text h="5%"textAlign="center" fontSize="2xl">{team.strTeam}</Text>
             <Flex alignItems="center" h="95%">
             <Image src={team.strTeamBadge}/>

@@ -8,8 +8,9 @@ export const AppContainer: React.FC = ({ children }) => {
 export const CardLink: React.FC<BoxProps & { link: string }> = ({ link, children, ...props }) => {
   return (
     <Box
+      background="gray.50"
       display="block"
-      _hover={{ background: 'green.500', color: "white" }}
+      _hover={{ background: 'black', color: "white" }}
       as={Rlink}
       border="1px solid black"
       borderRadius="base"
