@@ -1,71 +1,32 @@
 import React, { useState } from 'react'
 
 import { Link as RLink, useParams } from 'react-router-dom'
+import { FaArrowCircleLeft, FaEdit, FaRegEye, FaTrash } from 'react-icons/fa';
 
-import { useFetchTeam } from '../api/api'
-import { Link, Image, Spinner, Text, Divider, FormControl, FormLabel, Input, FormHelperText, Button } from "@chakra-ui/react"
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-} from "@chakra-ui/react"
-import { useDisclosure } from "@chakra-ui/react"
-import { players, Players } from './teamData'
-import { AppContainer } from '../components/LayoutComponents';
+import { useFetchOnePlayer, useFetchTeam } from '../api/api'
+
+import { Flex, Link, Image, Spinner, Text, Divider, FormControl, FormLabel, Input, Button, Box, IconButton, Grid } from "@chakra-ui/react"
 
 
-type paramType = { id: string }
+import { useDisclosure, chakra } from "@chakra-ui/react"
+import { AppContainer, PlayerRow } from '../components/LayoutComponents';
+import { SamplePlayerData, samplePlayersData } from '../api/playersData';
+import { UpdateForm } from '../components/UpdateForm';
 
 
-type UpdateFormProps = {
-    id: string | null; isOpen: boolean; onClose: () => void; setPlayers: React.Dispatch<React.SetStateAction<Players>>; playersState: Players
-}
-
-const UpdateForm: React.FC<UpdateFormProps> = ({ id, isOpen, onClose, playersState, setPlayers }) => {
-    const playerToUpdate = playersState.find(player => id === player.idPlayer)
-    const [inputValue, setInputValue] = useState<string>(playerToUpdate?.strPlayer ?? '')
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setInputValue(e.target.value)
-    }
-    const handleSubmit = () => {
-        onClose()
-        setPlayers(prev => prev.map(player => {
-            return player.idPlayer === id ? { ...player, strPlayer: inputValue } : player
-        }))
-    }
-
-    return <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-            <ModalHeader>Update player</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-                <FormControl>
-                    <FormLabel>Player name</FormLabel>
-                    <Input value={inputValue} name="strPlayer" placeholder="ex. Paul Pogba" onChange={(e) => handleChange(e)} />
-                </FormControl>
-            </ModalBody>
-            <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
-                    Change name
-                </Button>
-                <Button onClick={onClose} variant="secondary">Cancel</Button>
-            </ModalFooter>
-        </ModalContent>
-    </Modal>
-}
+type RouteParams = {
+    id: string;
+};
 
 export const Team = () => {
-    const param: paramType = useParams()
+    const param: RouteParams = useParams()
     const { isLoading, isError, data } = useFetchTeam(param.id)
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [playersState, setPlayers] = useState<Players>(players)
+    const [playersState, setPlayers] = useState<SamplePlayerData[]>(samplePlayersData)
     const [inputValue, setInputValue] = useState<string>('')
     const [updateId, setUpdateId] = useState<string | null>(null)
+    const { isLoading: playerLoading, data: playerById } = useFetchOnePlayer(updateId ?? '')
+
     if (isLoading) {
         return <Spinner />
     }
@@ -81,13 +42,12 @@ export const Team = () => {
     }
     const handleSubmit = (): void => {
         setPlayers(
-            [...playersState, {
-                idTeam: param.id,
+            [{
                 idPlayer: Math.floor(Math.random() * 1000).toString(),
                 strPlayer: inputValue,
-                strTeam: "Les girondins de bordeaux",
-                strImg: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
-            }]
+                strThumb: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+            },
+            ...playersState]
         )
         setInputValue('')
     }
@@ -95,42 +55,63 @@ export const Team = () => {
         onOpen()
         setUpdateId(id)
     }
+
+    const handleSeeDetail = (id: string): void => {
+        setUpdateId(id)
+        console.log(playerById)
+    }
+
     return (
         <AppContainer>
-            <Link as={RLink} to="/"> Back to team list </Link>
-            <Image src={data?.teams[0].strTeamBadge} w={8}></Image>
-            <Divider spa orientation="horizontal" />
-            <Text fontSize="xl">Team</Text>
-            {playersState.map(player => {
-                return (<React.Fragment key={player.idPlayer}><Text>{player.strPlayer}</Text>
-                    <Button onClick={() => handleDelete(player.idPlayer)}>Delete</Button>
-                    <Button onClick={() => handleUpdateModal(player.idPlayer)}> update</Button>
-                </React.Fragment>)
-            })}
+            <Link as={RLink} to="/" d="flex" alignItems="center">
+                <Box mr={1} as={FaArrowCircleLeft} />
+                <chakra.span>Back to team list </chakra.span>
+            </Link>
 
-            <Divider orientation="horizontal" />
-            <Text fontSize="xl">Add Player</Text>
-            {/* <form onSubmit={handleSubmit}> */}
-            <FormControl>
-                <FormLabel>Player name</FormLabel>
-                <Input value={inputValue} name="strPlayer" placeholder="ex. Paul Pogba" onChange={handleChange} />
-            </FormControl>
-            <Button colorScheme="green" fontWeight="normal" onClick={handleSubmit}>
-                Add Player
-            </Button>
-            {/* </form> */}
-            {/* 
- * place data in form 
- * add img input 
- * add verifications for inputs 
- * add logic for responsivness
- * make things beautiful
- * add query for team player
- * add config for tests 
- * split and reorganize the form 
- * add a modal for deletion
- * add one player view
- */}
+            <Divider my={4} spa orientation="horizontal" />
+
+            <Flex>
+                <Image src={data?.teams[0].strTeamBadge} w={8} mr={3} />
+                <Text fontSize="2xl">{data?.teams[0].strTeam} team players</Text>
+            </Flex>
+
+            <Divider my={4} spa orientation="horizontal" />
+            <Grid gap={6} gridTemplateColumns="1fr 1fr">
+                <div>
+                    <Text mb={4} fontSize="xl">Players list</Text>
+
+                    {playersState.map(player => {
+                        return (
+                            <PlayerRow key={player.idPlayer}>
+                                <Flex alignItems="center" justifyContent="space-between">
+                                    <Flex alignItems="center">
+                                        <Image mr={3} w={16} src={player.strThumb} borderRadius="50%" />
+                                        <Text>{player.strPlayer}</Text>
+                                    </Flex>
+                                    <div>
+                                        <IconButton mr={3} borderRadius="base" size="sm" aria-label="delete" icon={<Box as={FaRegEye} />} onClick={() => handleSeeDetail(player.idPlayer)} />
+                                        <IconButton mr={3} borderRadius="base" size="sm" aria-label="delete" icon={<Box as={FaEdit} />} onClick={() => handleUpdateModal(player.idPlayer)} />
+                                        <IconButton borderRadius="base" size="sm" aria-label="delete" icon={<Box as={FaTrash} />} onClick={() => handleDelete(player.idPlayer)} />
+
+                                    </div>
+                                </Flex>
+                            </PlayerRow>)
+                    })}
+                </div>
+                <Box>
+                    <Text mb={4} fontSize="xl">Add a Player to the team</Text>
+                    {/* <form onSubmit={handleSubmit}> */}
+                    <FormControl>
+                        <FormLabel>Player name</FormLabel>
+                        <Input value={inputValue} name="strPlayer" placeholder="ex. Paul Pogba" onChange={handleChange} />
+                    </FormControl>
+                    <Button mt={4} colorScheme="green" fontWeight="normal" onClick={handleSubmit}>
+                        Add Player
+                    </Button>
+
+                    {/* </form> */}
+                </Box>
+            </Grid>
             <UpdateForm key={updateId} id={updateId} onClose={onClose} isOpen={isOpen} setPlayers={setPlayers} playersState={playersState} />
         </AppContainer>
     )

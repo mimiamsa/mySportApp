@@ -1,3 +1,7 @@
+/**
+ * I added '| null' for almost each value except for the object id 
+ * because I was not sure which value is never null
+ */
 export type TeamData = {
   idTeam: string;
   idSoccerXML: string | null;
@@ -64,20 +68,17 @@ export type TeamData = {
   strLocked: string | null;
 };
 
-
-
+/**
+ * Typing for several teams/players works for also works for one team/player
+ * the API alway returns an object with an array of object(s)
+ */
 export type Teams = {
   teams: TeamData[];
 };
 
-export type Players = {
-  players: Array<[PlayerData]>;
-};
-
-
-export type PlayerData = {
-  idTeam: string | null;
-  idPlayer: string | null;
+export type APIPlayerData = {
+  idTeam: string;
+  idPlayer: string;
   idTeam2: string | null;
   idTeamNational: string | null;
   idSoccerXML: string | null;
@@ -136,3 +137,10 @@ export type PlayerData = {
   strCreativeCommons: string | null;
   strLocked: string | null;
 };
+
+
+export type Players = {
+  players: APIPlayerData[];
+};
+
+

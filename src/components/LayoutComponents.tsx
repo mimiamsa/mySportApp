@@ -20,3 +20,7 @@ export const CardLink: React.FC<BoxProps & { link: string }> = ({ link, children
     </Box>
   )
 }
+
+export const PlayerRow: React.FC = ({ children }) => {
+  return <Box borderBottom="1px solid" p={4}>{children}</Box>
+}

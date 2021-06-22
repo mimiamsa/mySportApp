@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import {  Players, Teams } from "./type";
+import { Players, Teams } from "./type";
 
 const fetchTeams = async (): Promise<Teams> =>
   await (
@@ -30,12 +30,13 @@ const fetchOnePlayer = async (playerId: string): Promise<Players> =>
     )
   ).json();
 
-  
-  export const useFetchOnePlayer = (id: string) => {
-    return useQuery(["playerById", id], () => fetchOnePlayer(id));
-  };
+export const useFetchOnePlayer = (id: string) => {
+  return useQuery(["playerById", id], () => fetchOnePlayer(id));
+};
 
-
+/** This call is not usable because it need special access to the api
+ * but It would have been the one to use to fetch players when clicking on a team detail
+ */
 const fetchAllPlayersFromTeam = async (teamName: string): Promise<Players> =>
   await (
     await fetch(
@@ -43,7 +44,6 @@ const fetchAllPlayersFromTeam = async (teamName: string): Promise<Players> =>
     )
   ).json();
 
-  export const useFetchAllPlayers = (name:string) => {
-    return useQuery(["allPlayers", name], () => fetchAllPlayersFromTeam(name));
-  }
-
+export const useFetchAllPlayers = (name: string) => {
+  return useQuery(["allPlayers", name], () => fetchAllPlayersFromTeam(name));
+};

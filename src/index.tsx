@@ -12,14 +12,9 @@ import "@fontsource/archivo/400.css"
 import "@fontsource/archivo/700.css"
 
 import {
-  // useQuery,
-  // useMutation,
-  // useQueryClient,
   QueryClient,
   QueryClientProvider,
 } from 'react-query'
-
-
 
 
 const queryClient = new QueryClient()
